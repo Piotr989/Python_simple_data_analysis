@@ -139,25 +139,7 @@ def process_area_data(path_to_data: str):
 
     return area_data
 
-def check_names_consistency(
-    df1: pd.DataFrame,
-    df2: pd.DataFrame,
-    column_name: str
-):
-    """
-    Checks if the names in the specified column of two DataFrames are consistent.
-    """
-    df1_names = set(df1[column_name])
-    df2_names = set(df2[column_name])
 
-    if df1_names != df2_names:
-        print("Inconsistent names found:")
-        print("In DataFrame 1 but not in DataFrame 2:")
-        print(df1_names - df2_names)
-        print("In DataFrame 2 but not in DataFrame 1:")
-        print(df2_names - df1_names)
-    else:
-        print("All names are consistent.")
 
 def merge_dataframes(list_of_dfs: list, mode: str):
     """
@@ -183,14 +165,13 @@ def merge_dataframes(list_of_dfs: list, mode: str):
 
 def calculate_basic_statistics(df: pd.DataFrame):
     """
-    Calculates basic statistics for a specified column in a DataFrame.
+    Calculates basic statistics for numeric columns in a DataFrame and returns them as a DataFrame.
     """
-    column_names = df.columns
-    retval = []
+    stats = []
 
     for column in df.columns:
         if pd.api.types.is_numeric_dtype(df[column]):
-            retval.append({
+            stats.append({
                 'column': column,
                 'mean': df[column].mean(),
                 'median': df[column].median(),
@@ -198,11 +179,5 @@ def calculate_basic_statistics(df: pd.DataFrame):
                 'min': df[column].min(),
                 'max': df[column].max()
             })
-    
-    return retval
 
-def calculate_correlations(df: pd.DataFrame):
-    """
-    Calculates correlation coefficients between numeric columns in a DataFrame.
-    """
-    return df.corr().reset_index()
+    return pd.DataFrame(stats)
